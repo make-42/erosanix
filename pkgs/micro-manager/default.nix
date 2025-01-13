@@ -77,7 +77,7 @@ in
     meta = with lib; {
       description = "Micro-Manager";
       homepage = "https://micro-manager.org";
-      license = licenses.GPLv3;
+      license = licenses.bsd;
       maintainers = with maintainers; [ontake];
       platforms = ["x86_64-linux"];
     };
