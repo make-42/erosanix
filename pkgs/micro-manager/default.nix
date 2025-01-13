@@ -12,7 +12,7 @@ in
   mkWindowsAppNoCC rec {
     inherit wine;
 
-    pname = "amazon-kindle";
+    pname = "micro-manager";
     release = "2.0";
     version = "${release}.0";
 

@@ -7,8 +7,11 @@
     flake = false;
   };
 
-  outputs = { self, nixpkgs, flake-compat }: {
-
+  outputs = {
+    self,
+    nixpkgs,
+    flake-compat,
+  }: {
     lib.x86_64-linux = let
       pkgs = import "${nixpkgs}" {
         system = "x86_64-linux";
@@ -18,20 +21,20 @@
       callPackage = pkgs.callPackage;
       trivial = import ./lib/trivial.nix;
     in {
-      mkWindowsApp = callPackage ./pkgs/mkwindowsapp { 
-        makeBinPath = pkgs.lib.makeBinPath; 
+      mkWindowsApp = callPackage ./pkgs/mkwindowsapp {
+        makeBinPath = pkgs.lib.makeBinPath;
       };
 
-      mkWindowsAppNoCC = callPackage ./pkgs/mkwindowsapp { 
+      mkWindowsAppNoCC = callPackage ./pkgs/mkwindowsapp {
         stdenv = pkgs.stdenvNoCC;
-        makeBinPath = pkgs.lib.makeBinPath; 
+        makeBinPath = pkgs.lib.makeBinPath;
       };
 
-      copyDesktopIcons = pkgs.makeSetupHook { name = "copyDesktopIcons"; } ./hooks/copy-desktop-icons.sh;
+      copyDesktopIcons = pkgs.makeSetupHook {name = "copyDesktopIcons";} ./hooks/copy-desktop-icons.sh;
       makeDesktopIcon = callPackage ./lib/makeDesktopIcon.nix {};
 
-      genericBinWrapper = callPackage ./lib/generic-bin-wrapper.nix { };
-      nvidia-offload-wrapper = callPackage ./lib/nvidia-offload-wrapper.nix { 
+      genericBinWrapper = callPackage ./lib/generic-bin-wrapper.nix {};
+      nvidia-offload-wrapper = callPackage ./lib/nvidia-offload-wrapper.nix {
         genericBinWrapper = self.lib.x86_64-linux.genericBinWrapper;
         nvidia-offload = self.packages.x86_64-linux.nvidia-offload;
       };
@@ -44,20 +47,20 @@
       compose = trivial.compose;
       composeAndApply = trivial.composeAndApply;
 
-      mkSierraChartStudyFromSrc = pkgs.pkgsCross.mingwW64.callPackage ./lib/mkSierraChartStudyFromSrc.nix { 
+      mkSierraChartStudyFromSrc = pkgs.pkgsCross.mingwW64.callPackage ./lib/mkSierraChartStudyFromSrc.nix {
         mcfgthread = pkgs.pkgsCross.mingwW64.windows.mcfgthreads_pre_gcc_13;
         sierrachart = self.packages.x86_64-linux.sierrachart;
       };
 
-      mkSierraChartStudyFromDLL = pkgs.callPackage ./lib/mkSierraChartStudyFromDLL.nix { 
+      mkSierraChartStudyFromDLL = pkgs.callPackage ./lib/mkSierraChartStudyFromDLL.nix {
         sierrachart = self.packages.x86_64-linux.sierrachart;
       };
 
-      torsocks = callPackage ./lib/torsocks.nix { 
+      torsocks = callPackage ./lib/torsocks.nix {
         genericBinWrapper = self.lib.x86_64-linux.genericBinWrapper;
       };
 
-      nanogl = callPackage ./lib/nanogl.nix { 
+      nanogl = callPackage ./lib/nanogl.nix {
         genericBinWrapper = self.lib.x86_64-linux.genericBinWrapper;
       };
     };
@@ -71,22 +74,22 @@
       callPackage = pkgs.callPackage;
       trivial = import ./lib/trivial.nix;
     in {
-      mkWindowsApp = callPackage ./pkgs/mkwindowsapp { 
-        makeBinPath = pkgs.lib.makeBinPath; 
+      mkWindowsApp = callPackage ./pkgs/mkwindowsapp {
+        makeBinPath = pkgs.lib.makeBinPath;
       };
 
-      mkWindowsAppNoCC = callPackage ./pkgs/mkwindowsapp { 
+      mkWindowsAppNoCC = callPackage ./pkgs/mkwindowsapp {
         stdenv = pkgs.stdenvNoCC;
-        makeBinPath = pkgs.lib.makeBinPath; 
+        makeBinPath = pkgs.lib.makeBinPath;
       };
 
-      copyDesktopIcons = pkgs.makeSetupHook { name = "copyDesktopIcons"; } ./hooks/copy-desktop-icons.sh;
+      copyDesktopIcons = pkgs.makeSetupHook {name = "copyDesktopIcons";} ./hooks/copy-desktop-icons.sh;
       makeDesktopIcon = callPackage ./lib/makeDesktopIcon.nix {};
       compose = trivial.compose;
       composeAndApply = trivial.composeAndApply;
-      genericBinWrapper = callPackage ./lib/generic-bin-wrapper.nix { };
+      genericBinWrapper = callPackage ./lib/generic-bin-wrapper.nix {};
 
-      torsocks = callPackage ./lib/torsocks.nix { 
+      torsocks = callPackage ./lib/torsocks.nix {
         genericBinWrapper = self.lib.i686-linux.genericBinWrapper;
       };
     };
@@ -99,34 +102,41 @@
 
       callPackage = pkgs.callPackage;
       lib = self.lib.x86_64-linux;
-      in {
+    in
+      {
         nvidia-offload = callPackage ./pkgs/nvidia-offload.nix {};
 
-        sierrachart = callPackage ./pkgs/sierrachart { 
+        sierrachart = callPackage ./pkgs/sierrachart {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.base; 
+          wine = pkgs.wine64Packages.base;
           msvcShim = self.packages.x86_64-linux.sierrachart-zig-msvc-shim;
         };
 
-        sierrachart-zig-msvc-shim-exec = callPackage ./pkgs/sierrachart-zig-msvc-shim/shim.nix { };
-        sierrachart-zig-msvc-shim-bin-exec = callPackage ./pkgs/sierrachart-zig-msvc-shim/shim-bin.nix { };
+        sierrachart-zig-msvc-shim-exec = callPackage ./pkgs/sierrachart-zig-msvc-shim/shim.nix {};
+        sierrachart-zig-msvc-shim-bin-exec = callPackage ./pkgs/sierrachart-zig-msvc-shim/shim-bin.nix {};
 
-        sierrachart-zig-msvc-shim = callPackage ./pkgs/sierrachart-zig-msvc-shim { 
-            shim = self.packages.x86_64-linux.sierrachart-zig-msvc-shim-exec;
+        sierrachart-zig-msvc-shim = callPackage ./pkgs/sierrachart-zig-msvc-shim {
+          shim = self.packages.x86_64-linux.sierrachart-zig-msvc-shim-exec;
         };
 
-        sierrachart-mingw-msvc-shim = callPackage ./pkgs/sierrachart-mingw-msvc-shim { };
+        sierrachart-mingw-msvc-shim = callPackage ./pkgs/sierrachart-mingw-msvc-shim {};
 
-        amazon-kindle = callPackage ./pkgs/amazon-kindle { 
+        amazon-kindle = callPackage ./pkgs/amazon-kindle {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wineWowPackages.full; 
+          wine = pkgs.wineWowPackages.full;
         };
 
-        mkwindowsapp-tools = callPackage ./pkgs/mkwindowsapp-tools { wrapProgram = pkgs.wrapProgram; };
+        micro-manager = callPackage ./pkgs/micro-manager {
+          inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
+          wine = pkgs.wine64Packages.stableFull;
+          wineArch = "win64";
+        };
+
+        mkwindowsapp-tools = callPackage ./pkgs/mkwindowsapp-tools {wrapProgram = pkgs.wrapProgram;};
 
         foobar2000 = callPackage ./pkgs/foobar2000.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           wineArch = "win64";
         };
 
@@ -137,40 +147,40 @@
 
         line = callPackage ./pkgs/line.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wineWowPackages.full; 
+          wine = pkgs.wineWowPackages.full;
         };
 
-        sable = callPackage ./pkgs/sable/default.nix { 
+        sable = callPackage ./pkgs/sable/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
-        toem = callPackage ./pkgs/toem/default.nix { 
+        toem = callPackage ./pkgs/toem/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.base; 
+          wine = pkgs.wine64Packages.base;
           zenity = pkgs.zenity;
         };
 
-        the-spirit-and-the-mouse = callPackage ./pkgs/the-spirit-and-the-mouse/default.nix { 
+        the-spirit-and-the-mouse = callPackage ./pkgs/the-spirit-and-the-mouse/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.base; 
+          wine = pkgs.wine64Packages.base;
           zenity = pkgs.zenity;
         };
 
-        snakebird-complete = callPackage ./pkgs/snakebird/default.nix { 
+        snakebird-complete = callPackage ./pkgs/snakebird/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.base; 
+          wine = pkgs.wine64Packages.base;
           zenity = pkgs.zenity;
         };
 
-        lego-builders-journey = callPackage ./pkgs/lego-builders-journey/default.nix { 
+        lego-builders-journey = callPackage ./pkgs/lego-builders-journey/default.nix {
           inherit (lib) mkWindowsAppNoCC makeDesktopIcon copyDesktopIcons;
           wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
-        duskers = callPackage ./pkgs/duskers/default.nix { 
+        duskers = callPackage ./pkgs/duskers/default.nix {
           inherit (lib) mkWindowsAppNoCC makeDesktopIcon copyDesktopIcons;
           wine = pkgs.wineWowPackages.base;
           zenity = pkgs.zenity;
@@ -178,59 +188,59 @@
 
         caustic = callPackage ./pkgs/caustic/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.winePackages.stableFull; 
+          wine = pkgs.winePackages.stableFull;
         };
 
         chess-ultra = callPackage ./pkgs/chess-ultra/default.nix {
           inherit (lib) mkWindowsAppNoCC makeDesktopIcon copyDesktopIcons;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
         tunche = callPackage ./pkgs/tunche/default.nix {
           inherit (lib) mkWindowsAppNoCC makeDesktopIcon copyDesktopIcons;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
-        blockstream-green = callPackage ./pkgs/blockstream-green/default.nix { 
+        blockstream-green = callPackage ./pkgs/blockstream-green/default.nix {
           inherit (lib) makeDesktopIcon copyDesktopIcons;
         };
 
         sparrow-unwrapped = callPackage ./pkgs/sparrow/default.nix {
           openimajgrabber = callPackage ./pkgs/sparrow/openimajgrabber.nix {};
-          openjdk = pkgs.jdk23.override { enableJavaFX = true; };
+          openjdk = pkgs.jdk23.override {enableJavaFX = true;};
         };
 
-        sparrow = callPackage ./pkgs/sparrow/fhsenv.nix { 
+        sparrow = callPackage ./pkgs/sparrow/fhsenv.nix {
           sparrow-unwrapped = self.packages.x86_64-linux.sparrow-unwrapped;
         };
 
-        gossip = callPackage ./pkgs/gossip/default.nix { 
+        gossip = callPackage ./pkgs/gossip/default.nix {
           inherit (lib) makeDesktopIcon copyDesktopIcons;
         };
 
         horizon-chase-turbo = callPackage ./pkgs/horizon-chase-turbo/default.nix {
           inherit (lib) mkWindowsAppNoCC makeDesktopIcon copyDesktopIcons;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
-        black-book = callPackage ./pkgs/black-book/default.nix { 
+        black-book = callPackage ./pkgs/black-book/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
-        microcap = callPackage ./pkgs/microcap { 
+        microcap = callPackage ./pkgs/microcap {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wineWowPackages.stableFull; 
+          wine = pkgs.wineWowPackages.stableFull;
           wineArch = "win64";
         };
 
         wineshell-wine64 = callPackage ./pkgs/wineshell/default.nix {
           inherit (lib) mkWindowsApp;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           wineArch = "win64";
           wineFlavor = "wine64";
         };
@@ -251,7 +261,7 @@
 
         wineshell-wine64-base = callPackage ./pkgs/wineshell/default.nix {
           inherit (lib) mkWindowsApp;
-          wine = pkgs.wine64Packages.base; 
+          wine = pkgs.wine64Packages.base;
           wineArch = "win64";
           wineFlavor = "wine64";
           enableMonoBootPrompt = false;
@@ -299,7 +309,7 @@
 
         winerun-wine64 = callPackage ./pkgs/winerun/default.nix {
           inherit (lib) mkWindowsApp;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           wineArch = "win64";
           wineFlavor = "wine64";
         };
@@ -330,19 +340,20 @@
           enableVulkan = true;
         };
 
-        out-of-line = callPackage ./pkgs/out-of-line/default.nix { 
+        out-of-line = callPackage ./pkgs/out-of-line/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.stableFull; 
+          wine = pkgs.wine64Packages.stableFull;
           zenity = pkgs.zenity;
         };
 
         alice3 = callPackage ./pkgs/alice/alice3.nix {
           inherit (lib) makeDesktopIcon copyDesktopIcons;
-          openjdk = pkgs.openjdk.override { enableJavaFX = true; };
+          openjdk = pkgs.openjdk.override {enableJavaFX = true;};
         };
 
-        bisq2 = callPackage ./pkgs/bisq2/default.nix { };
-    } // (builtins.mapAttrs (name: pkg: callPackage pkg { }) (import ./cross-platform-pkgs.nix));
+        bisq2 = callPackage ./pkgs/bisq2/default.nix {};
+      }
+      // (builtins.mapAttrs (name: pkg: callPackage pkg {}) (import ./cross-platform-pkgs.nix));
 
     packages.aarch64-linux = let
       pkgs = import "${nixpkgs}" {
@@ -351,8 +362,10 @@
       };
 
       callPackage = pkgs.callPackage;
-      in {
-    } // (builtins.mapAttrs (name: pkg: callPackage pkg { }) (import ./cross-platform-pkgs.nix));
+    in
+      {
+      }
+      // (builtins.mapAttrs (name: pkg: callPackage pkg {}) (import ./cross-platform-pkgs.nix));
 
     packages.i686-linux = let
       pkgs = import "${nixpkgs}" {
@@ -362,23 +375,24 @@
 
       callPackage = pkgs.callPackage;
       lib = self.lib.i686-linux;
-      in {
-        mkwindowsapp-tools = callPackage ./pkgs/mkwindowsapp-tools { wrapProgram = pkgs.wrapProgram; };
+    in
+      {
+        mkwindowsapp-tools = callPackage ./pkgs/mkwindowsapp-tools {wrapProgram = pkgs.wrapProgram;};
 
         foobar2000 = callPackage ./pkgs/foobar2000.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.winePackages.stableFull; 
+          wine = pkgs.winePackages.stableFull;
           wineArch = "win32";
         };
 
         caustic = callPackage ./pkgs/caustic/default.nix {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.winePackages.stableFull; 
+          wine = pkgs.winePackages.stableFull;
         };
 
-        microcap = callPackage ./pkgs/microcap { 
+        microcap = callPackage ./pkgs/microcap {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.winePackages.stableFull; 
+          wine = pkgs.winePackages.stableFull;
           wineArch = "win32";
         };
 
@@ -403,7 +417,8 @@
         winerun-wine-vulkan = self.packages.i686-linux.winerun-wine.override {
           enableVulkan = true;
         };
-    } // (builtins.mapAttrs (name: pkg: callPackage pkg { }) (import ./cross-platform-pkgs.nix));
+      }
+      // (builtins.mapAttrs (name: pkg: callPackage pkg {}) (import ./cross-platform-pkgs.nix));
 
     nixosModules.electrum-personal-server = import ./modules/electrum-personal-server.nix;
     nixosModules.protonvpn = import ./modules/protonvpn.nix;
@@ -420,14 +435,14 @@
         system = "x86_64-linux";
       };
     in {
-      nvidia-offload = import ./lib/nvidia-offload-wrapper.nix { 
-        genericBinWrapper = import ./lib/generic-bin-wrapper.nix { stdenv = pkgs.stdenv; };
+      nvidia-offload = import ./lib/nvidia-offload-wrapper.nix {
+        genericBinWrapper = import ./lib/generic-bin-wrapper.nix {stdenv = pkgs.stdenv;};
         writeShellScript = pkgs.writeShellScript;
         nvidia-offload = self.packages.x86_64-linux.nvidia-offload;
       };
 
-      torsocks = import ./lib/torsocks.nix { 
-        genericBinWrapper = import ./lib/generic-bin-wrapper.nix { stdenv = pkgs.stdenv; };
+      torsocks = import ./lib/torsocks.nix {
+        genericBinWrapper = import ./lib/generic-bin-wrapper.nix {stdenv = pkgs.stdenv;};
         writeShellScript = pkgs.writeShellScript;
         torsocks = pkgs.torsocks;
       };
