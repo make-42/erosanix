@@ -44,7 +44,7 @@ in
     '';
 
     winAppRun = ''
-      $WINE "$WINEPREFIX/drive_c/Program Files/Micro-Manager-${release}/micromanager.exe"
+      $WINE "$WINEPREFIX/drive_c/Program Files/Micro-Manager-${release}/ImageJ.exe"
     '';
 
     installPhase = ''
