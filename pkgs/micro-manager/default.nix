@@ -36,7 +36,7 @@ in
     };
 
     winAppInstall = ''
-      $WINE ${src} /S
+      $WINE ${src}
       wineserver -w
     '';
 
