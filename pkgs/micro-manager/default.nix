@@ -17,7 +17,7 @@ in
     version = "${release}.0";
 
     src = fetchurl {
-      url = "https://download.micro-manager.org/${release}/2.0/Windows/MMSetup_64bit_${version}.exe";
+      url = "https://download.micro-manager.org/${release}/Windows/MMSetup_64bit_${version}.exe";
       sha256 = "1xpha1388hf6c12aj58v75hrj3rpkrsrarl4vjahs1r1zqqkjdih";
     };
 
@@ -44,7 +44,7 @@ in
     '';
 
     winAppRun = ''
-      $WINE "$WINEPREFIX/drive_c/Program Files (x86)/Amazon/Kindle/Kindle.exe"
+      $WINE "$WINEPREFIX/drive_c/Program Files/Micro-Manager-${release}/micromanager.exe"
     '';
 
     installPhase = ''
