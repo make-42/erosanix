@@ -128,7 +128,7 @@
 
         micro-manager = callPackage ./pkgs/micro-manager {
           inherit (lib) mkWindowsAppNoCC copyDesktopIcons makeDesktopIcon;
-          wine = pkgs.wine64Packages.stableFull;
+          wine = pkgs.wineWowPackages.stableFull;
         };
 
         mkwindowsapp-tools = callPackage ./pkgs/mkwindowsapp-tools {wrapProgram = pkgs.wrapProgram;};
