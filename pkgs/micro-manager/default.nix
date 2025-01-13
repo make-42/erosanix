@@ -1,0 +1,84 @@
+{
+  lib,
+  mkWindowsAppNoCC,
+  wine,
+  fetchurl,
+  makeDesktopItem,
+  makeDesktopIcon,
+  copyDesktopItems,
+  copyDesktopIcons,
+}: let
+in
+  mkWindowsAppNoCC rec {
+    inherit wine;
+
+    pname = "amazon-kindle";
+    release = "2.0";
+    version = "${release}.0";
+
+    src = fetchurl {
+      url = "https://download.micro-manager.org/${release}/2.0/Windows/MMSetup_64bit_${version}.exe";
+      sha256 = "1xpha1388hf6c12aj58v75hrj3rpkrsrarl4vjahs1r1zqqkjdih";
+    };
+
+    dontUnpack = true;
+    wineArch = "win64";
+    persistRegistry = true;
+    nativeBuildInputs = [copyDesktopItems copyDesktopIcons];
+
+    fileMap = {
+      "$HOME/.cache/micro-manager/Local Settings" = "drive_c/users/$USER/Local Settings";
+      "$HOME/.cache/micro-manager/AppData" = "drive_c/users/$USER/AppData";
+    };
+
+    enabledWineSymlinks = {
+      desktop = false;
+    };
+
+    winAppInstall = ''
+      $WINE ${src} /S
+      wineserver -w
+    '';
+
+    winAppPreRun = ''
+    '';
+
+    winAppRun = ''
+      $WINE "$WINEPREFIX/drive_c/Program Files (x86)/Amazon/Kindle/Kindle.exe"
+    '';
+
+    installPhase = ''
+      runHook preInstall
+
+      ln -s $out/bin/.launcher $out/bin/micro-manager
+
+      runHook postInstall
+    '';
+
+    desktopItems = [
+      (makeDesktopItem {
+        name = pname;
+        exec = pname;
+        icon = pname;
+        desktopName = "Micro-Manager";
+        categories = ["Science"];
+      })
+    ];
+
+    desktopIcon = makeDesktopIcon {
+      name = "micro-manager";
+
+      src = fetchurl {
+        url = "https://micro-manager.org/media/logo/logo-web.png";
+        sha256 = "sha256-ao3UdXkhcp9tpB506dFR1cWgYUOLkEcX3DP5JyvVEzw=";
+      };
+    };
+
+    meta = with lib; {
+      description = "Micro-Manager";
+      homepage = "https://micro-manager.org";
+      license = licenses.GPLv3;
+      maintainers = with maintainers; [ontake];
+      platforms = ["x86_64-linux"];
+    };
+  }
