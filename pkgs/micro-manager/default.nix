@@ -78,7 +78,7 @@ in
       description = "Micro-Manager";
       homepage = "https://micro-manager.org";
       license = licenses.bsd;
-      maintainers = with maintainers; [ontake];
+      maintainers = with maintainers; [];
       platforms = ["x86_64-linux"];
     };
   }
