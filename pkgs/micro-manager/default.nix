@@ -70,7 +70,7 @@ in
 
       src = fetchurl {
         url = "https://micro-manager.org/media/logo/logo-web.png";
-        sha256 = "sha256-ao3UdXkhcp9tpB506dFR1cWgYUOLkEcX3DP5JyvVEzw=";
+        sha256 = "sha256-mWQ4zcPLPiv5et5qEDdVd2wKPETS4KmXb/7p/0hpNUA==";
       };
     };
 
